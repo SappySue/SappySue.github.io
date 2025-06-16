@@ -8,18 +8,25 @@
   <h1>Hello Pushwoosh!</h1>
 
   <script>
-    const Pushwoosh = window.pushwoosh;
+    window.addEventListener('load', function () {
+      const Pushwoosh = window.pushwoosh;
 
-    Pushwoosh.push(['init', {
-      logLevel: 'debug', 
-      applicationCode: 'BF7A8-37DB4',
-      defaultNotificationTitle: 'Push Test',
-      defaultNotificationImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png',
-      defaultNotificationUrl: 'https://sappysue.github.io/',
-      serviceWorkerUrl: 'worker.js'
-    }]);
+      if (Pushwoosh) {
+        Pushwoosh.push(['init', {
+            logLevel: 'debug', 
+            applicationCode: 'BF7A8-37DB4',
+            defaultNotificationTitle: 'Push Test',
+            defaultNotificationImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png',
+            defaultNotificationUrl: 'https://sappysue.github.io/',
+            serviceWorkerUrl: 'worker.js'
+            }]);
 
-    Pushwoosh.push(['registerForPushNotifications']);
+        Pushwoosh.push(['registerForPushNotifications']);
+      } else {
+        console.error('Pushwoosh SDK not loaded yet');
+      }
+    });
   </script>
 </body>
 </html>
+
