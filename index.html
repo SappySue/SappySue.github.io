@@ -1,11 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <title>Pushwoosh Web Push Test</title>
+  <script src="https://cdn.pushwoosh.com/webpush/v3/pushwoosh-web-notifications.js" async></script>
 </head>
 <body>
-    <h1>Hello</h1>
+  <h1>Hello Pushwoosh!</h1>
+
+  <script>
+    const Pushwoosh = window.pushwoosh;
+
+    Pushwoosh.push(['init', {
+      logLevel: 'debug', 
+      applicationCode: 'BF7A8-37DB4',
+      defaultNotificationTitle: 'Push Test',
+      defaultNotificationImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png',
+      defaultNotificationUrl: 'https://sappysue.github.io/',
+      serviceWorkerUrl: 'worker.js'
+    }]);
+
+    Pushwoosh.push(['registerForPushNotifications']);
+  </script>
 </body>
 </html>
