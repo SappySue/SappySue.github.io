@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <title>Pushwoosh Web SDK 3.0 Demo</title>
@@ -13,33 +13,36 @@
     // Инициализация SDK
     Pushwoosh.push(['init', {
       logLevel: 'debug',
-      applicationCode: 'BF7A8-37DB4', // твой Application Code
+      applicationCode: 'BF7A8-37DB4',
       apiToken: 'aZicon0JByIZpTAjnCR0SLfkGTSH2IrnNJkfGrzQlsguWEbf5iQpJzazSGMoJ0m1tj4XKvAl8lXFAfhvZIAm',
       defaultNotificationTitle: 'Pushwoosh Demo',
       defaultNotificationImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png',
       defaultNotificationUrl: 'https://sappysue.github.io/',
       serviceWorkerUrl: 'pushwoosh-service-worker.js',
-      autoSubscribe: false, // включим подписку вручную по кнопке
-      subscribeWidget: {
-        enable: false
-      }
+      autoSubscribe: false, // ручная подписка по кнопке
+      subscribeWidget: { enable: false }
     }]);
 
-    // Обработка событий
+    // Обработка событий SDK
     Pushwoosh.push(['onLoad', function(api) {
-      console.log('✅ Pushwoosh SDK загружен');
+      console.log('✅ SDK загружен');
 
-      // Событие: уведомление получено
+      Pushwoosh.addEventHandler('subscribe-success', function() {
+        console.log('✅ Пользователь подписался');
+      });
+
+      Pushwoosh.addEventHandler('subscribe-fail', function(error) {
+        console.error('❌ Ошибка подписки:', error);
+      });
+
       Pushwoosh.addEventHandler('receive-push', function(payload) {
         console.log('📬 Получено уведомление:', payload.notification);
       });
 
-      // Событие: уведомление открыто
       Pushwoosh.addEventHandler('open-notification', function(payload) {
         console.log('📨 Открыто уведомление:', payload.notification);
       });
 
-      // Событие: уведомление закрыто
       Pushwoosh.addEventHandler('hide-notification', function(payload) {
         console.log('🛑 Закрыто уведомление:', payload.notification);
       });
@@ -47,19 +50,13 @@
   </script>
 </head>
 <body>
-  <h1>Pushwoosh Demo</h1>
+  <h1>Pushwoosh Web Push Demo</h1>
 
   <button onclick="subscribeUser()">🔔 Подписаться на уведомления</button>
 
   <script>
     function subscribeUser() {
-      Pushwoosh.push(function(api) {
-        api.subscribe().then(() => {
-          console.log('👍 Пользователь подписан на уведомления');
-        }).catch((err) => {
-          console.error('❌ Ошибка подписки:', err);
-        });
-      });
+      Pushwoosh.push(['subscribe']);
     }
   </script>
 </body>
