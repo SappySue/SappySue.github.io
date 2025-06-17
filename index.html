@@ -2,76 +2,77 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Pushwoosh Web SDK 3.0 Demo</title>
+  <title>Pushwoosh подписка с пояснением</title>
+  <style>
+    #modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+    }
 
-  <!-- Подключаем SDK -->
-  <script src="https://cdn.pushwoosh.com/webpush/v3/pushwoosh-web-notifications.js" defer></script>
+    #modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      max-width: 400px;
+    }
 
-  <script>
-    var Pushwoosh = Pushwoosh || [];
-
-    // Инициализация SDK
-    Pushwoosh.push(['init', {
-      logLevel: 'debug',
-      applicationCode: 'BF7A8-37DB4',
-      apiToken: 'aZicon0JByIZpTAjnCR0SLfkGTSH2IrnNJkfGrzQlsguWEbf5iQpJzazSGMoJ0m1tj4XKvAl8lXFAfhvZIAm',
-      defaultNotificationTitle: 'Pushwoosh Demo',
-      defaultNotificationImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png',
-      defaultNotificationUrl: 'https://sappysue.github.io/',
-      serviceWorkerUrl: 'pushwoosh-service-worker.js',
-      autoSubscribe: false,
-      subscribeWidget: { enable: false }
-    }]);
-
-    // Обработка событий и сохранение API глобально
-    Pushwoosh.push(['onLoad', function(api) {
-      console.log('✅ SDK загружен');
-      window.pwApi = api; // ← сохраняем API глобально для использования кнопкой
-
-      Pushwoosh.addEventHandler('subscribe-success', function() {
-        console.log('✅ Пользователь подписался');
-      });
-
-      Pushwoosh.addEventHandler('subscribe-fail', function(error) {
-        console.error('❌ Ошибка подписки:', error);
-      });
-
-      Pushwoosh.addEventHandler('receive-push', function(payload) {
-        console.log('📬 Получено уведомление:', payload.notification);
-      });
-
-      Pushwoosh.addEventHandler('open-notification', function(payload) {
-        console.log('📨 Открыто уведомление:', payload.notification);
-      });
-
-      Pushwoosh.addEventHandler('hide-notification', function(payload) {
-        console.log('🛑 Закрыто уведомление:', payload.notification);
-      });
-
-      // Проверим входящие сообщения
-      api.getInboxMessages().then(function(response) {
-        console.log('📥 Inbox сообщения:', response.messages);
-      });
-    }]);
-  </script>
+    button {
+      padding: 10px 20px;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h1>Pushwoosh Web Push Demo</h1>
 
-  <button onclick="subscribeUser()">🔔 Подписаться на уведомления</button>
+<h1>Добро пожаловать!</h1>
+<button onclick="openModal()">🔔 Подписаться на уведомления</button>
 
-  <script>
-    function subscribeUser() {
-      if (window.pwApi && pwApi.subscribeForPushNotifications) {
-        pwApi.subscribeForPushNotifications().then(() => {
-          console.log('✅ Пользователь подписался на уведомления');
-        }).catch((err) => {
-          console.error('❌ Ошибка подписки:', err);
-        });
-      } else {
-        console.warn('⏳ SDK ещё не готов или API недоступен');
-      }
-    }
-  </script>
+<!-- Модальное окно -->
+<div id="modal">
+  <div id="modal-content">
+    <p>Хотите получать уведомления о новостях и акциях?</p>
+    <button onclick="subscribeToPush()">Да, подписаться</button>
+  </div>
+</div>
+
+<!-- Подключаем SDK -->
+<script src="https://cdn.pushwoosh.com/webpush/v3/pushwoosh-web-notifications.js" defer></script>
+<script>
+  var Pushwoosh = Pushwoosh || [];
+
+  Pushwoosh.push(['init', {
+    applicationCode: 'BF7A8-37DB4',
+    apiToken: 'твой_токен',
+    serviceWorkerUrl: 'pushwoosh-service-worker.js',
+    autoSubscribe: false, // мы сами подписываем вручную
+    defaultNotificationTitle: 'Новости от нас!',
+    defaultNotificationImage: 'https://example.com/icon.png',
+    defaultNotificationUrl: 'https://example.com/'
+  }]);
+
+  // Показываем модалку
+  function openModal() {
+    document.getElementById('modal').style.display = 'flex';
+  }
+
+  // Подписка на уведомления
+  function subscribeToPush() {
+    Pushwoosh.push(function(api) {
+      api.subscribe().then(() => {
+        alert('Подписка успешна!');
+        document.getElementById('modal').style.display = 'none';
+      }).catch((err) => {
+        alert('Ошибка подписки: ' + err.message);
+      });
+    });
+  }
+</script>
+
 </body>
 </html>
