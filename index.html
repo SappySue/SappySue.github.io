@@ -4,43 +4,38 @@
   <meta charset="UTF-8" />
   <title>Pushwoosh Web SDK 3.0 Demo</title>
 
-  <!-- SDK -->
   <script src="https://cdn.pushwoosh.com/webpush/v3/pushwoosh-web-notifications.js" defer></script>
 
   <script>
-    var Pushwoosh = Pushwoosh || [];
+    window.Pushwoosh = window.Pushwoosh || [];
 
+    // Инициализация
     Pushwoosh.push(['init', {
-      logLevel: 'debug',
-      applicationCode: 'BF7A8-37DB4', // Твой код приложения
-      defaultNotificationTitle: 'Push Demo',
-      defaultNotificationImage: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg',
-      defaultNotificationUrl: 'https://sappysue.github.io/',
+      applicationCode: 'BF7A8-37DB4',
       serviceWorkerUrl: 'pushwoosh-service-worker.js',
-      autoSubscribe: true
+      autoSubscribe: true,
+      logLevel: 'debug',
+      defaultNotificationTitle: 'Push Demo',
+      defaultNotificationUrl: 'https://sappysue.github.io/'
     }]);
 
+    // Действия после загрузки SDK
     Pushwoosh.push(['onLoad', function(api) {
       console.log('✅ SDK загружен');
 
-      console.log('HWID:', api.getHWID());
-      console.log('Token:', api.getPushToken());
+      try {
+        const hwid = api.getHWID?.();
+        const token = api.getPushToken?.();
 
-      Pushwoosh.addEventHandler('subscribe-success', function() {
-        console.log('🎉 Подписка успешна!');
-      });
-
-      Pushwoosh.addEventHandler('subscribe-fail', function(error) {
-        console.error('❌ Ошибка подписки:', error);
-      });
-
-      Pushwoosh.addEventHandler('receive-push', function(payload) {
-        console.log('📩 Получено уведомление:', payload.notification);
-      });
+        console.log('HWID:', hwid);
+        console.log('Push Token:', token);
+      } catch (err) {
+        console.error('❌ Ошибка при получении HWID или Token:', err);
+      }
     }]);
   </script>
 </head>
 <body>
-  <h1>Pushwoosh Web SDK 3.0 — Тест уведомлений</h1>
+  <h1>Pushwoosh SDK 3.0: Проверка 1</h1>
 </body>
 </html>
