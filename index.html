@@ -19,13 +19,14 @@
       defaultNotificationImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png',
       defaultNotificationUrl: 'https://sappysue.github.io/',
       serviceWorkerUrl: 'pushwoosh-service-worker.js',
-      autoSubscribe: false, // ручная подписка по кнопке
+      autoSubscribe: false,
       subscribeWidget: { enable: false }
     }]);
 
-    // Обработка событий SDK
+    // Обработка событий и сохранение API глобально
     Pushwoosh.push(['onLoad', function(api) {
       console.log('✅ SDK загружен');
+      window.pwApi = api; // ← сохраняем API глобально для использования кнопкой
 
       Pushwoosh.addEventHandler('subscribe-success', function() {
         console.log('✅ Пользователь подписался');
@@ -46,6 +47,11 @@
       Pushwoosh.addEventHandler('hide-notification', function(payload) {
         console.log('🛑 Закрыто уведомление:', payload.notification);
       });
+
+      // Проверим входящие сообщения
+      api.getInboxMessages().then(function(response) {
+        console.log('📥 Inbox сообщения:', response.messages);
+      });
     }]);
   </script>
 </head>
@@ -56,7 +62,15 @@
 
   <script>
     function subscribeUser() {
-      Pushwoosh.push(['subscribe']);
+      if (window.pwApi && pwApi.subscribeForPushNotifications) {
+        pwApi.subscribeForPushNotifications().then(() => {
+          console.log('✅ Пользователь подписался на уведомления');
+        }).catch((err) => {
+          console.error('❌ Ошибка подписки:', err);
+        });
+      } else {
+        console.warn('⏳ SDK ещё не готов или API недоступен');
+      }
     }
   </script>
 </body>
