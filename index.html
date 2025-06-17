@@ -1,25 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <title>Pushwoosh Web Push Test</title>
+  <meta charset="UTF-8">
+  <title>Pushwoosh Demo</title>
+  <script src="https://cdn.pushwoosh.com/webpush/v3/pushwoosh-web-notifications.js" defer></script>
 
-<script>
-  var Pushwoosh = Pushwoosh || [];
-  Pushwoosh.push(['init', {
-    logLevel: 'debug',
-    applicationCode: 'BF7A8-37DB4',
-    apiToken: 'aZicon0JByIZpTAjnCR0SLfkGTSH2IrnNJkfGrzQlsguWEbf5iQpJzazSGMoJ0m1tj4XKvAl8lXFAfhvZIAm',
-    defaultNotificationTitle: 'Push Test',
-    defaultNotificationImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png',
-    defaultNotificationUrl: 'https://sappysue.github.io/',
-    serviceWorkerUrl: 'pushwoosh-service-worker.js',
-    autoSubscribe: true
-  }]);
-</script>
-<script src="https://cdn.pushwoosh.com/webpush/v3/pushwoosh-web-notifications.js" defer></script>
+  <script>
+    var Pushwoosh = Pushwoosh || [];
 
+    Pushwoosh.push(['init', {
+      applicationCode: 'BF7A8-37DB4',
+      apiToken: 'aZicon0JByIZpTAjnCR0SLfkGTSH2IrnNJkfGrzQlsguWEbf5iQpJzazSGMoJ0m1tj4XKvAl8lXFAfhvZIAm',
+      logLevel: 'debug',
+      defaultNotificationTitle: 'Pushwoosh Demo',
+      defaultNotificationUrl: 'https://sappysue.github.io/',
+      defaultNotificationImage: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg',
+      serviceWorkerUrl: 'pushwoosh-service-worker.js',
+      autoSubscribe: false,
+      subscribeWidget: { enable: false }
+    }]);
+
+    Pushwoosh.push(['onLoad', function(api) {
+      window.pwApi = api;
+
+      console.log('✅ SDK загружен');
+      console.log('→ Доступные методы API:', Object.keys(api));
+
+      // Подписка (этот метод точно существует в SDK 3)
+      api.subscribe().then(() => {
+        console.log('✅ Подписка выполнена');
+        console.log('HWID:', api.getHWID?.());
+        console.log('Token:', api.getPushToken?.());
+      }).catch(err => {
+        console.error('❌ Ошибка подписки:', err.message);
+      });
+    }]);
+  </script>
 </head>
 <body>
-  <h1>Hello Pushwoosh!</h1>
+  <h1>Pushwoosh Web SDK v3</h1>
 </body>
 </html>
